@@ -1,4 +1,4 @@
-BIN_NAME = rest_api
+BIN_NAME = file_manager_server
 
 build:
 	@go build -o ./bin/$(BIN_NAME) ./cmd/main.go
