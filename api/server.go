@@ -1,7 +1,6 @@
 package api
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
@@ -31,20 +30,7 @@ func (s *RestApiServer) Run() {
 	sub.HandleFunc("/stream/{path:.*}", s.handleStreamFile).Methods(http.MethodGet)
 	sub.HandleFunc("/download/{path:.*}", s.handleDownloadFile).Methods(http.MethodGet)
 
-	server := &http.Server{
-		Addr:    s.listenAddr,
-		Handler: r,
-		TLSConfig: &tls.Config{
-			MinVersion:               tls.VersionTLS13,
-			PreferServerCipherSuites: true,
-		},
-	}
+	fmt.Printf("Server running on host %s\n", s.listenAddr)
 
-	fmt.Printf("Server running on host %s\n", server.Addr)
-
-	err := server.ListenAndServeTLS(os.Getenv("CRT_PATH"), os.Getenv("KEY_PATH"))
-	if err != nil {
-		log.Fatalln(err)
-		return
-	}
+	log.Fatal(http.ListenAndServeTLS(s.listenAddr, os.Getenv("CRT_PATH"), os.Getenv("KEY_PATH"), r))
 }

@@ -120,7 +120,7 @@ func (fr *fileResponse) getFilePath(fs fs.FileInfo) string {
 func (fr *fileResponse) getStreamPath(fs fs.FileInfo) string {
 	if utils.IsExtHasAnyValue(fr.rawPath) {
 		host := utils.GetFullHostRequest(fr.request)
-
+		fmt.Printf("%s/api/stream/%s\n", host, fr.rawPath)
 		return fmt.Sprintf("%s/api/stream/%s", host, fr.rawPath)
 	}
 	return ""
