@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/arekbor/file-manager-server/utils"
 )
 
 // Allows cors origin
@@ -19,7 +21,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 
 func loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("\033[33mREQUEST:\033[0m\033[32m [Proto: %s], [Host: %s], [Method: %s], [Path: %s]\033[0m\n", r.Proto, r.Host, r.Method, r.URL.Path)
+		fmt.Printf("\033[33mREQUEST:\033[0m\033[32m [Proto: %s], [Host: %s], [Method: %s], [Path: %s]\033[0m\n", utils.GetProtoFromRequest(r), r.Host, r.Method, r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }

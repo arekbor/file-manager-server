@@ -45,5 +45,6 @@ func (s *RestApiServer) Run() {
 	err := server.ListenAndServeTLS(os.Getenv("CRT_PATH"), os.Getenv("KEY_PATH"))
 	if err != nil {
 		log.Fatalln(err)
+		return
 	}
 }

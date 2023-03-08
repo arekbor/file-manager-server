@@ -1,0 +1,1 @@
+remember to generate file-manager-server.crt and file-manager-server.key in certs dir

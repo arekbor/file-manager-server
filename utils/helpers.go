@@ -66,10 +66,7 @@ func IsSliceHas[T comparable](s []T, v T) bool {
 
 // Gets from request full host path
 func GetFullHostRequest(r *http.Request) string {
-	var (
-		p     = strings.Split(r.Proto, "/")[0]
-		proto = strings.ToLower(p)
-	)
+	proto := GetProtoFromRequest(r)
 
 	return fmt.Sprintf("%s://%s", proto, r.Host)
 }
@@ -95,4 +92,11 @@ func RandomNumber() int {
 	max := 100000
 
 	return rand.Intn(max-min+1) + min
+}
+
+func GetProtoFromRequest(r *http.Request) string {
+	if r.TLS != nil {
+		return "https"
+	}
+	return "http"
 }
