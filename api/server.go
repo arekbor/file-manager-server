@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -32,5 +31,14 @@ func (s *RestApiServer) Run() {
 
 	fmt.Printf("Server running on host %s\n", s.listenAddr)
 
-	log.Fatal(http.ListenAndServeTLS(s.listenAddr, os.Getenv("CRT_PATH"), os.Getenv("KEY_PATH"), r))
+	server := &http.Server{
+		Addr:    s.listenAddr,
+		Handler: r,
+	}
+
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
 }
