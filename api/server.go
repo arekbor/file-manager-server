@@ -25,6 +25,7 @@ func (s *RestApiServer) Run() {
 	r.Use(corsMiddleware, loggerMiddleware)
 	sub := r.PathPrefix("/api").Subrouter()
 
+	sub.HandleFunc("/upload", s.handleUpload).Methods(http.MethodPost, http.MethodOptions)
 	sub.HandleFunc("/manager/{path:.*}", s.handleManager).Methods(http.MethodGet)
 	sub.HandleFunc("/stream/{path:.*}", s.handleStreamFile).Methods(http.MethodGet)
 	sub.HandleFunc("/download/{path:.*}", s.handleDownloadFile).Methods(http.MethodGet)

@@ -6,11 +6,43 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/arekbor/file-manager-server/types"
 	"github.com/arekbor/file-manager-server/utils"
 	"github.com/gorilla/mux"
 )
+
+func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseMultipartForm(100 << 20)
+	if err != nil {
+		http.Error(w, "error while uploading files", http.StatusBadRequest)
+		return
+	}
+	files := r.MultipartForm.File["file"]
+
+	for _, file := range files {
+
+		path := filepath.Join(os.Getenv("FILES_PATH_TO_DOWNLOAD"), file.Filename)
+		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		if err != nil {
+			http.Error(w, "error while opening dir", http.StatusBadRequest)
+			return
+		}
+		defer f.Close()
+
+		reader, err := file.Open()
+		if err != nil {
+			http.Error(w, "error while reading file from FORM: "+file.Filename, http.StatusBadRequest)
+			return
+		}
+
+		defer reader.Close()
+
+		_, err = io.Copy(f, reader)
+	}
+}
 
 func (s *RestApiServer) handleManager(w http.ResponseWriter, r *http.Request) {
 	var (
