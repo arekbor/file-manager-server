@@ -101,7 +101,7 @@ func (s *RestApiServer) handleStreamFile(w http.ResponseWriter, r *http.Request)
 
 	switch t := fr.getFileType(fi); t {
 	case types.AudioFileType:
-		w.Header().Set("Content-Type", fmt.Sprintf("audio/%s", utils.GetFileExt(fi.Name())))
+		w.Header().Set("Content-Type", "audio/audio/mpeg")
 
 	case types.TextFileType:
 		w.Header().Set("Content-Type", fmt.Sprintf("text/%s", utils.GetFileExt(fi.Name())))
