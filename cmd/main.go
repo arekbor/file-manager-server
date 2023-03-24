@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 
 	"github.com/arekbor/file-manager-server/api"
 	"github.com/joho/godotenv"
@@ -14,7 +15,8 @@ var (
 func main() {
 	err := godotenv.Load("./.env")
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 
 	s := api.NewRestApi(*listenAddr)

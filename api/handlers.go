@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -15,9 +16,10 @@ import (
 
 func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseMultipartForm(100 << 20)
+	err := r.ParseMultipartForm(200 << 20)
 	if err != nil {
-		http.Error(w, "error while uploading files", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 	files := r.MultipartForm.File["file"]
@@ -28,6 +30,7 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			http.Error(w, "error while opening dir", http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 		defer f.Close()
@@ -35,6 +38,7 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 		reader, err := file.Open()
 		if err != nil {
 			http.Error(w, "error while reading file from FORM: "+file.Filename, http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 
@@ -54,6 +58,7 @@ func (s *RestApiServer) handleManager(w http.ResponseWriter, r *http.Request) {
 		file, err := fr.getFileResponse()
 		if err != nil {
 			http.Error(w, "error while reading file or directory", http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 		writeJSON(w, file)
@@ -63,6 +68,7 @@ func (s *RestApiServer) handleManager(w http.ResponseWriter, r *http.Request) {
 	files, err := fr.getFilesResponse()
 	if err != nil {
 		http.Error(w, "error while reading files or directories", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
@@ -78,6 +84,7 @@ func (s *RestApiServer) handleStreamFile(w http.ResponseWriter, r *http.Request)
 	f, err := os.Open(fr.fullPath)
 	if err != nil {
 		http.Error(w, "error while reading a file", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 	defer f.Close()
@@ -85,8 +92,10 @@ func (s *RestApiServer) handleStreamFile(w http.ResponseWriter, r *http.Request)
 	fi, err := f.Stat()
 	if err != nil {
 		http.Error(w, "error while readinga a file stats", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
+	fmt.Println(fi.ModTime())
 
 	fr.getFileType(fi)
 
@@ -105,6 +114,7 @@ func (s *RestApiServer) handleStreamFile(w http.ResponseWriter, r *http.Request)
 	_, err = io.Copy(w, f)
 	if err != nil {
 		http.Error(w, "error while copying a file", http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 }
@@ -118,6 +128,7 @@ func (s *RestApiServer) handleDownloadFile(w http.ResponseWriter, r *http.Reques
 	f, err := os.Open(fr.fullPath)
 	if err != nil {
 		http.Error(w, "error while reading a file", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 	defer f.Close()
@@ -125,11 +136,13 @@ func (s *RestApiServer) handleDownloadFile(w http.ResponseWriter, r *http.Reques
 	fi, err := f.Stat()
 	if err != nil {
 		http.Error(w, "error while readinga a file stats", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
 	if fr.getFileType(fi) == types.UnknowFileType {
 		http.Error(w, "unknow type of file", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
@@ -140,6 +153,7 @@ func (s *RestApiServer) handleDownloadFile(w http.ResponseWriter, r *http.Reques
 	_, err = io.Copy(w, f)
 	if err != nil {
 		http.Error(w, "error while copying a file", http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 }

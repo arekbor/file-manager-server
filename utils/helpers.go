@@ -95,9 +95,5 @@ func RandomNumber() int {
 }
 
 func GetProtoFromRequest(r *http.Request) string {
-	// if r.TLS != nil {
-	// 	return "https"
-	// }
-	//returns always https because proxy
-	return "https"
+	return os.Getenv("DEFAULT_PROTO")
 }

@@ -1,10 +1,11 @@
 package api
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/go-chi/cors"
 	"github.com/gorilla/mux"
 )
 
@@ -22,7 +23,14 @@ func NewRestApi(listenAddr string) *RestApiServer {
 // Runs mux router with all defined handlers
 func (s *RestApiServer) Run() {
 	r := mux.NewRouter()
-	r.Use(corsMiddleware, loggerMiddleware)
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{os.Getenv("CORS_URL")},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Depth", "User-Agent", "X-File-Size", "X-Requested-With", "If-Modified-Since", "X-File-Name", "Cache-Control"},
+		AllowCredentials: true,
+	}), loggerMiddleware)
+
 	sub := r.PathPrefix("/api").Subrouter()
 
 	sub.HandleFunc("/upload", s.handleUpload).Methods(http.MethodPost, http.MethodOptions)
@@ -30,7 +38,7 @@ func (s *RestApiServer) Run() {
 	sub.HandleFunc("/stream/{path:.*}", s.handleStreamFile).Methods(http.MethodGet)
 	sub.HandleFunc("/download/{path:.*}", s.handleDownloadFile).Methods(http.MethodGet)
 
-	fmt.Printf("Server running on host %s\n", s.listenAddr)
+	log.Printf("Server running on host %s\n", s.listenAddr)
 
 	server := &http.Server{
 		Addr:    s.listenAddr,

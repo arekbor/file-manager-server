@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -55,6 +56,7 @@ func newFileResponse(basePath string, rawPath string, request *http.Request) *fi
 func (fr *fileResponse) getFilesResponse() ([]*types.File, error) {
 	filesInfo, err := ioutil.ReadDir(fr.fullPath)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
@@ -63,6 +65,7 @@ func (fr *fileResponse) getFilesResponse() ([]*types.File, error) {
 	for _, file := range filesInfo {
 		f, err := fr.getFile(file)
 		if err == nil {
+			log.Println(err)
 			files = append(files, f)
 		}
 	}
@@ -74,16 +77,19 @@ func (fr *fileResponse) getFilesResponse() ([]*types.File, error) {
 func (fr *fileResponse) getFileResponse() (*types.File, error) {
 	file, err := os.Open(fr.fullPath)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	fileInfo, err := file.Stat()
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	f, err := fr.getFile(fileInfo)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
@@ -110,7 +116,6 @@ func (fr *fileResponse) getFile(fs fs.FileInfo) (*types.File, error) {
 func (fr *fileResponse) getFilePath(fs fs.FileInfo) string {
 	if !utils.IsExtHasAnyValue(fr.rawPath) {
 		path := filepath.Join(fr.rawPath, fs.Name())
-
 		return fmt.Sprintf("/api/manager/%s", path)
 	}
 	return ""
@@ -130,7 +135,6 @@ func (fr *fileResponse) getStreamPath(fs fs.FileInfo) string {
 func (fr *fileResponse) getDownloadPath(fs fs.FileInfo) string {
 	if utils.IsExtHasAnyValue(fr.rawPath) {
 		host := utils.GetFullHostRequest(fr.request)
-
 		return fmt.Sprintf("%s/api/download/%s", host, fr.rawPath)
 	}
 	return ""
