@@ -13,8 +13,8 @@ import (
 var (
 	AudioExtTypes = []string{"mp3", "wav", "m4a", "flac", "wma"}
 	TextExtTypes  = []string{"php", "js", "go", "rust", "c", "cpp", "cp", "json", "jar", "html", "css", "txt", "log"}
-	PdfExtTypes   = []string{"pdf"}
 	ImageExtTypes = []string{"png", "jpeg", "jpg", "gif", "svg", "webp", "avif"}
+	VideoExtTypes = []string{"mp4", "wmv", "avi", "mkv", "webm", "flv", "mov"}
 )
 
 // Converts bytes to human readable stats

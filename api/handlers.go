@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/arekbor/file-manager-server/types"
 	"github.com/arekbor/file-manager-server/utils"
@@ -16,7 +17,15 @@ import (
 
 func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseMultipartForm(200 << 20)
+	limit, err := strconv.ParseInt(os.Getenv("HEADERS_LIMIT_MB"), 0, 64)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	err = r.ParseMultipartForm(limit << 20)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		log.Println(err)
