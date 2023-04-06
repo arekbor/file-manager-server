@@ -37,6 +37,7 @@ func (s *RestApiServer) Run() {
 	sub.HandleFunc("/manager/{path:.*}", s.handleManager).Methods(http.MethodGet)
 	sub.HandleFunc("/stream/{path:.*}", s.handleStreamFile).Methods(http.MethodGet)
 	sub.HandleFunc("/download/{path:.*}", s.handleDownloadFile).Methods(http.MethodGet)
+	sub.HandleFunc("/folderNames", s.handleGetAllFolderNames).Methods(http.MethodGet)
 
 	log.Printf("Server running on host %s\n", s.listenAddr)
 

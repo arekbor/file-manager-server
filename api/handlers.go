@@ -33,9 +33,26 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	files := r.MultipartForm.File["file"]
 
+	folderName := r.Form.Get("folderName")
+	fmt.Println(folderName)
+
+	fullPath := os.Getenv("FILES_PATH_TO_DOWNLOAD")
+
+	if folderName != "root" {
+		fullPath = filepath.Join(os.Getenv("FILES_PATH_TO_DOWNLOAD"), folderName)
+		_, err = os.Stat(fullPath)
+		if err != nil {
+			http.Error(w, "error while opening dir from body", http.StatusBadRequest)
+			log.Println(err)
+			return
+		}
+	}
+
+	fmt.Println(fullPath)
+
 	for _, file := range files {
 
-		path := filepath.Join(os.Getenv("FILES_PATH_TO_DOWNLOAD"), file.Filename)
+		path := filepath.Join(fullPath, file.Filename)
 		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			http.Error(w, "error while opening dir", http.StatusBadRequest)
@@ -46,7 +63,7 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 
 		reader, err := file.Open()
 		if err != nil {
-			http.Error(w, "error while reading file from FORM: "+file.Filename, http.StatusBadRequest)
+			http.Error(w, "error while reading file from form: "+file.Filename, http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
@@ -165,4 +182,17 @@ func (s *RestApiServer) handleDownloadFile(w http.ResponseWriter, r *http.Reques
 		log.Println(err)
 		return
 	}
+}
+
+func (s *RestApiServer) handleGetAllFolderNames(w http.ResponseWriter, r *http.Request) {
+	var (
+		fr = newFileResponse(os.Getenv("FILES_PATH_TO_DOWNLOAD"), "", r)
+	)
+	result, err := fr.getAllFolderNames()
+	if err != nil {
+		http.Error(w, "error while reading folders", http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+	writeJSON(w, result)
 }

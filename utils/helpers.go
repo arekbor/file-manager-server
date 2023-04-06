@@ -89,7 +89,7 @@ func RandomNumber() int {
 	rand.Seed(time.Now().UnixNano())
 
 	min := 1
-	max := 100000
+	max := 1000000
 
 	return rand.Intn(max-min+1) + min
 }

@@ -52,6 +52,22 @@ func newFileResponse(basePath string, rawPath string, request *http.Request) *fi
 	}
 }
 
+// Gets all folder names to display for some options form in html
+func (fr *fileResponse) getAllFolderNames() ([]string, error) {
+	folders, err := ioutil.ReadDir(fr.basePath)
+	if err != nil {
+		return nil, err
+	}
+	var folderNames []string
+	folderNames = append(folderNames, "root")
+	for _, folder := range folders {
+		if folder.IsDir() {
+			folderNames = append(folderNames, folder.Name())
+		}
+	}
+	return folderNames, nil
+}
+
 // Gets all files from base directory
 func (fr *fileResponse) getFilesResponse() ([]*types.File, error) {
 	filesInfo, err := ioutil.ReadDir(fr.fullPath)
