@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	listenAddr = flag.String("listenAddr", ":80", "listen addr of rest api")
+	listenAddr = flag.String("listenAddr", ":8080", "listen addr of rest api")
 )
 
 func main() {
