@@ -26,7 +26,7 @@ func (s *RestApiServer) Run() {
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{os.Getenv("CORS_URL")},
-		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Depth", "User-Agent", "X-File-Size", "X-Requested-With", "If-Modified-Since", "X-File-Name", "Cache-Control"},
 		AllowCredentials: true,
 	}), loggerMiddleware)

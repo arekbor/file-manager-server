@@ -16,6 +16,7 @@ import (
 )
 
 func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("handle Upload")
 
 	limit, err := strconv.ParseInt(os.Getenv("HEADERS_LIMIT_MB"), 0, 64)
 
