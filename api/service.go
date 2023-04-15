@@ -178,6 +178,9 @@ func (fr *fileResponse) getFileType(fi os.FileInfo) types.FileType {
 	if utils.IsSliceHas(utils.VideoExtTypes, ext) {
 		return types.VideoFileType
 	}
+	if utils.IsSliceHas(utils.ArchiveExtTypes, ext) {
+		return types.ArchiveFileType
+	}
 
 	return types.UnknowFileType
 }

@@ -16,7 +16,6 @@ import (
 )
 
 func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("handle Upload")
 
 	limit, err := strconv.ParseInt(os.Getenv("HEADERS_LIMIT_MB"), 0, 64)
 
@@ -35,7 +34,6 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 	files := r.MultipartForm.File["file"]
 
 	folderName := r.Form.Get("folderName")
-	fmt.Println(folderName)
 
 	fullPath := os.Getenv("FILES_PATH_TO_DOWNLOAD")
 
@@ -48,8 +46,6 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
-	fmt.Println(fullPath)
 
 	for _, file := range files {
 
@@ -122,7 +118,6 @@ func (s *RestApiServer) handleStreamFile(w http.ResponseWriter, r *http.Request)
 		log.Println(err)
 		return
 	}
-	fmt.Println(fi.ModTime())
 
 	fr.getFileType(fi)
 

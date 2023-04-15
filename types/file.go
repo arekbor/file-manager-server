@@ -9,6 +9,7 @@ const (
 	TextFileType
 	ImageFileType
 	VideoFileType
+	ArchiveFileType
 )
 
 type File struct {

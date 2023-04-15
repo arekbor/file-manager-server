@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	AudioExtTypes = []string{"mp3", "wav", "m4a", "flac", "wma"}
-	TextExtTypes  = []string{"php", "js", "go", "rust", "c", "cpp", "cp", "json", "jar", "html", "css", "txt", "log"}
-	ImageExtTypes = []string{"png", "jpeg", "jpg", "gif", "svg", "webp", "avif"}
-	VideoExtTypes = []string{"mp4", "wmv", "avi", "mkv", "webm", "flv", "mov"}
+	AudioExtTypes   = []string{"mp3", "wav", "m4a", "flac", "wma"}
+	TextExtTypes    = []string{"php", "js", "go", "rust", "c", "cpp", "cp", "json", "jar", "html", "css", "txt", "log"}
+	ImageExtTypes   = []string{"png", "jpeg", "jpg", "gif", "svg", "webp", "avif"}
+	VideoExtTypes   = []string{"mp4", "wmv", "avi", "mkv", "webm", "flv", "mov"}
+	ArchiveExtTypes = []string{"rar", "iso", "tar", "mar", "a", "ar", "lbr", "br", "gz", "lz", "7z", "s7s", "ace"}
 )
 
 // Converts bytes to human readable stats

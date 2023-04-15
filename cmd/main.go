@@ -1,15 +1,11 @@
 package main
 
 import (
-	"flag"
 	"log"
+	"os"
 
 	"github.com/arekbor/file-manager-server/api"
 	"github.com/joho/godotenv"
-)
-
-var (
-	listenAddr = flag.String("listenAddr", ":80", "listen addr of rest api")
 )
 
 func main() {
@@ -19,6 +15,6 @@ func main() {
 		return
 	}
 
-	s := api.NewRestApi(*listenAddr)
+	s := api.NewRestApi(os.Getenv("API_ADDR"))
 	s.Run()
 }
