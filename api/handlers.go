@@ -12,6 +12,7 @@ import (
 
 	"github.com/arekbor/file-manager-server/types"
 	"github.com/arekbor/file-manager-server/utils"
+	"github.com/dpapathanasiou/go-recaptcha"
 	"github.com/gorilla/mux"
 )
 
@@ -34,6 +35,21 @@ func (s *RestApiServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 	files := r.MultipartForm.File["file"]
 
 	folderName := r.Form.Get("folderName")
+
+	captchaToken := r.Form.Get("captcha")
+
+	recaptcha.Init(os.Getenv("CAPTCHA_PRIVATE_KEY"))
+	ok, err := recaptcha.Confirm("", captchaToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+	if !ok {
+		http.Error(w, "captcha not ok", http.StatusBadRequest)
+		log.Println("captcha not ok")
+		return
+	}
 
 	fullPath := os.Getenv("FILES_PATH_TO_DOWNLOAD")
 
